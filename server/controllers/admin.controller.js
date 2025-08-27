@@ -9,9 +9,9 @@ import expressAsyncHandler from "express-async-handler";
 
 const registerAdmin = expressAsyncHandler(async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { fullName, username, email, password } = req.body;
 
-    if (!email || !password) {
+    if (!email || !password || !fullName || !username) {
       return res.status(400).json({
         success: false,
         message: "Email and password are required",
@@ -29,12 +29,15 @@ const registerAdmin = expressAsyncHandler(async (req, res) => {
     const newAdmin = new Admin({
       email,
       password,
+      username,
+      fullName,
     });
 
     const savedAdmin = await newAdmin.save();
 
     const adminToReturn = {
-      _id: savedAdmin._id,
+      name: fullName,
+      username: username,
       email: savedAdmin.email,
       createdAt: savedAdmin.createdAt,
     };
@@ -51,7 +54,7 @@ const registerAdmin = expressAsyncHandler(async (req, res) => {
       message: "An internal server error occurred.",
       error: error.message,
     });
-  }
+  } 
 });
 
 /**
@@ -90,7 +93,8 @@ const loginAdmin = expressAsyncHandler(async (req, res) => {
     const accessToken = admin.generateAccessToken();
 
     const loggedInAdmin = {
-      _id: admin._id,
+      name: admin.fullName,
+      username: admin.username,
       email: admin.email,
     };
 
@@ -112,7 +116,7 @@ const loginAdmin = expressAsyncHandler(async (req, res) => {
   }
 });
 
-export default adminController = {
+export const adminController = {
   registerAdmin,
   loginAdmin,
 };
