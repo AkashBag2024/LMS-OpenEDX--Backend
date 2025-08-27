@@ -6,6 +6,9 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 
+// Routes imports
+import adminRoutes from "./routes/admin.route.js";
+
 // This is necessary for ES modules to correctly resolve paths
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -27,12 +30,6 @@ app.use(cors(corsOptions));
 app.use(express.json({ limit: "16kb" }));
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 
-console.log(
-  `[DEBUG] REQUEST_LOGGING_ENABLED: '${
-    process.env.REQUEST_LOGGING_ENABLED
-  }' (Type: ${typeof process.env.REQUEST_LOGGING_ENABLED})`
-);
-
 // 4. logger middleware
 if (process.env.REQUEST_LOGGING_ENABLED === "true") {
   const logDirectory = path.join(__dirname, "..", "logs");
@@ -48,6 +45,9 @@ if (process.env.REQUEST_LOGGING_ENABLED === "true") {
 
   app.use(morgan("combined", { stream: accessLogStream }));
 }
+
+// Routes initialize
+app.use("/api/admin", adminRoutes);
 
 // 5. Healthcheck route
 app.get("/health", (req, res) => {

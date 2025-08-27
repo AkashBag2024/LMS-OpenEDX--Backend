@@ -1,7 +1,17 @@
 import mongoose from "mongoose";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 const adminSchema = new mongoose.Schema(
   {
+    fullName: {
+      type: String,
+      required: true,
+    },
+    username: {
+      type: String,
+      required: true,
+    },
     email: {
       type: String,
       required: [true, "Email is required"],
